@@ -63,3 +63,7 @@ Although the robot is able to pass through all the rooms in the house, it is not
 
 ![Texto alternativo](/assets/images/2024-09-26 10-31-56.png)
 ![Texto alternativo](/assets/images/2024-09-26 10-49-00.png)
+
+## Video of the robot working
+
+[Ver el video en YouTube](https://youtu.be/UlAME742Dl8)

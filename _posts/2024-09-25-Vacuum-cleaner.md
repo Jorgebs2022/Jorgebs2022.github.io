@@ -29,6 +29,8 @@ My algorithm primarily focuses on covering as many rooms in the house as possibl
 
 ### Robot States
 
+![Texto alternativo](/assets/images/DRAWIOROBOTICA.png)
+
 As my robot's algorithm is designed, it consists of the following behaviors:
 
 ### Spyral State:

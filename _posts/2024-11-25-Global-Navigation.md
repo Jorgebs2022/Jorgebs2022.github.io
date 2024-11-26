@@ -64,6 +64,10 @@ Despite the improvements, the vehicle occasionally reacts too late to obstacles,
 
 This practice provided valuable experience in implementing a navigation system based on a cost grid. Understanding BFS for grid expansion, managing coordinate systems, and balancing navigation performance were key lessons learned. While there are areas for improvement, the vehicle successfully navigates to its target while avoiding obstacles.
 
-## Full video
+## Full video one trip
 
-[Ver el video en YouTube](https://youtu.be/Cj8m2f0LExA?si=TpSygMjXOdOjhkyV)
+[Ver el video en YouTube](https://youtu.be/ZvjFWqf-dd8)
+
+## Full video two trips
+
+[Ver el video en YouTube](https://youtu.be/APqx-dhWYkQ)

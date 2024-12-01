@@ -18,9 +18,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: "A Robotics Movile Blog"
+title: "A Robotics Movile and Embedded Systems Blog"
 email: j.barroso.2022@alumnos.urjc.es
-description: "This blog is about some exercises related to robotics movile"
+description: "This blog is about some exercises related to robotics movile and Embedded Systems"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://Jorgebs2022.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
@@ -30,6 +30,12 @@ github_username:  Jorgebs2022
 theme: minima
 plugins:
   - jekyll-feed
+
+menu:
+  - name: "Robótica Móvil"
+    url: /robotica-movil/
+  - name: "Sistemas Empotrados"
+    url: /sistemas-empotrados/
 
 # Exclude from processing.
 # The following items will not be processed, by default.

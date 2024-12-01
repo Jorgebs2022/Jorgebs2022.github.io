@@ -2,7 +2,7 @@
 layout: post
 title: "Global Navigation"
 date: 2024-11-25 10:25:43 +0200
-categories: jekyll update
+categories: robotica-movil
 ---
 
 ## Introduction

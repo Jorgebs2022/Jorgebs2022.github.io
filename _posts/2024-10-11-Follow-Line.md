@@ -2,7 +2,7 @@
 layout: post
 title: "Follow Line"
 date: 2024-10-13 11:36:09 +0200
-categories: jekyll update
+categories: robotica-movil
 ---
 
 

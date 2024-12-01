@@ -2,7 +2,7 @@
 layout: post
 title: "Vacuum cleaner"
 date: 2024-09-25 19:39:09 +0200
-categories: jekyll update
+categories: robotica-movil
 ---
 
 Welcome to my first Robotics Mobile Blog!

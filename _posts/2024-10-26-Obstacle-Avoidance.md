@@ -2,7 +2,7 @@
 layout: post
 title: "Obstacle Avoidance"
 date: 2024-10-26 11:36:09 +0200
-categories: jekyll update
+categories: robotica-movil
 ---
 
 ## Introduction

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Expending Machine"
-date: 2024-09-25 19:39:09 +0200
+date: 2024-11-30 19:39:09 +0200
 categories: sistemas-empotrados
 ---
 
@@ -168,6 +168,16 @@ The `is_pressed` variable indicates that there is active button interaction, whi
 
     - They facilitate state transitions (such as switching to admin mode) without noticeable delays.
 
+## Watchdog timer:
+
+In the coffee vending machine, the Watchdog Timer is configured to reset the microcontroller if it does not receive a reset signal within a defined time frame (e.g., 8 seconds). The wdt_reset() function is called periodically in the program to inform the WDT that the system is functioning correctly.
+
+### Advantages in the Vending Machine
+
+    - Prevents Crashes: If the machine encounters an unexpected issue or infinite loop, the Watchdog Timer automatically resets it, allowing it to restart and return to its initial state.
+    - Improves User Experience: The machine can recover from errors without requiring manual resets, ensuring consistent service for users.
+    - Enhances Robustness: With the WDT, the vending machine becomes more reliable and suitable for real-world deployment.
+
 ## Practice difficulties:
 
 During this practice, I encountered various challenges both technically and conceptually, requiring time and effort to resolve. Here are some of the most significant difficulties:
@@ -251,6 +261,61 @@ Building this coffee vending machine not only allowed me to apply the knowledge 
 This project demonstrated the importance of careful planning, the ability to solve problems creatively, and the proper approach to ensuring all components work effectively. It also opened the door to future improvements, such as implementing payment systems or persistent storage.
 
 In short, this practice not only enhanced my technical skills but also provided valuable experience in solving real-world problems, preparing me to tackle more complex challenges in the field of electronics and embedded systems.
+
+## Circuit Connections
+### Green LED
+
+    Anode (positive): Connected to pin A3 through a resistor.
+    Cathode (negative): Connected to Ground.
+
+### Blue LED
+
+    Anode (positive): Connected to pin 6 through a resistor.
+    Cathode (negative): Connected to Ground.
+
+### Potentiometer
+
+    Central pin: Connected to the Vo pin of the LCD.
+    Left pin: Connected to Ground.
+    Right pin: Connected to 5V.
+
+### LCD (Liquid Crystal Display)
+
+    VSS (Ground): Connected to Ground.
+    VDD (Power): Connected to 5V.
+    RS (Register Select): Connected to pin 12.
+    RW (Read/Write): Connected to Ground.
+    EN (Enable): Connected to pin 11.
+    D4: Connected to pin 5.
+    D5: Connected to pin 4.
+    D6: Connected to pin 13.
+    D7: Connected to pin 7.
+    A (Backlight Anode): Connected to 5V through a resistor.
+    K (Backlight Cathode): Connected to Ground.
+
+### Temperature and Humidity Sensor (DHT11)
+
+    VCC: Connected to 5V.
+    GND: Connected to Ground.
+    DATA: Connected to pin 8.
+
+### Ultrasonic Sensor
+
+    VCC: Connected to 5V.
+    Trig (Trigger): Connected to pin 9.
+    Echo: Connected to pin 10.
+    GND: Connected to Ground.
+
+### Components Used
+
+    Arduino UNO for general control.
+    Green LED (with a resistor).
+    Blue LED (with a resistor).
+    Potentiometer to adjust the LCD contrast.
+    LCD 16x2 with backlight.
+    DHT11 as a temperature and humidity sensor.
+    Ultrasonic sensor to measure distance.
+    Resistors (values according to LEDs and LCD requirements).
 
 ## Full video Expending Machine:
 

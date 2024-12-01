@@ -106,7 +106,7 @@ This state calls the function `preparing_coffe()` which displays "Preparando Caf
 
 ### ADMIN_STATE:
 
-This state can only be accessed by pressing the button for 5 seconds. This is achieved through an interruption explained later in the "Interrupciones" section. This state calls the function `admin_menu()` which displays a menu of actions the admin can perform. Its operation is similar to `MENU_STATE`. You can navigate the menu using the joystick and a counter. Pressing the joystick on a specific section of the admin menu transitions to the following states. Note that in any of the following states, if you move the joystick left on the x-axis, it will return to this state showing the admin menu.
+This state can only be accessed by pressing the button for 5 seconds. This is achieved through an interruption explained later in the "Interruptions" section. This state calls the function `admin_menu()` which displays a menu of actions the admin can perform. Its operation is similar to `MENU_STATE`. You can navigate the menu using the joystick and a counter. Pressing the joystick on a specific section of the admin menu transitions to the following states. Note that in any of the following states, if you move the joystick left on the x-axis, it will return to this state showing the admin menu.
 
 #### ADMIN_SHOW_TH:
 
@@ -156,17 +156,17 @@ Impact:
 This button allows toggling between user and admin modes, depending on how long it is pressed:
 
     - Pressing for more than 5 seconds: Switches to admin mode if not already in it, or returns to service mode if already in admin mode.
-    - Pressing between 2 and 5 seconds: Changes to the initial service state if in service mode and not in admin mode.
+    - Pressing between 2 and 3 seconds: Changes to the initial service state if in service mode and not in admin mode.
 
 The `is_pressed` variable indicates that there is active button interaction, while `buttonPressStartTime` calculates the press duration.
 
 ### Advantages os using an interruption in this case:
 
-    - Respuesta rápida: The use of interruptions ensures that user actions, such as pressing buttons, are recorded immediately without waiting for the main program to finish a task.
+    - Fast response: The use of interruptions ensures that user actions, such as pressing buttons, are recorded immediately without waiting for the main program to finish a task.
 
-    - Evita polling: Instead of constantly checking the buttons' state in the main loop, interruptions save time and resources.
+    - Avoid polling: Instead of constantly checking the buttons' state in the main loop, interruptions save time and resources.
 
-    - Manejo eficiente de eventos: They facilitate state transitions (such as switching to admin mode) without noticeable delays.
+    - They facilitate state transitions (such as switching to admin mode) without noticeable delays.
 
 ## Practice difficulties:
 

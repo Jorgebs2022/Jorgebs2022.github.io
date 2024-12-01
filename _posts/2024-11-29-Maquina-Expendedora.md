@@ -317,6 +317,8 @@ In short, this practice not only enhanced my technical skills but also provided 
     Ultrasonic sensor to measure distance.
     Resistors (values according to LEDs and LCD requirements).
 
+![Texto alternativo](/assets/images/circuit.png)
+
 ## Full video Expending Machine:
 
 [Ver el video en YouTube](https://youtu.be/vboUhIjYGVw)

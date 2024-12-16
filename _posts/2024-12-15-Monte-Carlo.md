@@ -5,98 +5,114 @@ date: 2024-12-15 10:25:43 +0200
 categories: robotica-movil
 ---
 
-## Introduccion:
+## Introduction:
 
-En esta práctica, el objetivo fue implementar un sistema de localización basado en el algoritmo de Monte Carlo (MCL). Este método utiliza partículas para representar la posición y orientación del robot en un mapa y permite actualizar estas estimaciones iterativamente basándose en mediciones reales de sensores y el movimiento del robot.
+In this practice, the objective was to implement a localization system based on the Monte Carlo Localization (MCL) algorithm. This method uses particles to represent the robot's position and orientation on a map and allows updating these estimates iteratively based on real sensor measurements and the robot's movement.
 
-El enfoque principal fue inicializar las partículas de forma controlada, calcular probabilidades basadas en los datos del láser teórico y real, propagar las partículas con ruido en cada iteración, y re-muestrearlas utilizando la ruleta de Monte Carlo.
+The main approach was to initialize the particles in a controlled manner, calculate probabilities based on theoretical and real laser data, propagate the particles with noise in each iteration, and resample them using the Monte Carlo roulette method.
 
-## Descripcion del algoritmo:
+## Algorithm Description:
 
-### Inicialización de partículas:
+### Particles Inicialization:
 
-    - Las partículas se generan en torno al punto central del mapa, con ruido controlado en la posición y orientación inicial.
-    - Solo se generan partículas en espacios libres del mapa (celdas no ocupadas por obstáculos). Esto asegura que las partículas sean válidas y representen ubicaciones posibles del robot.
+    -   The particles are generated around the central point of the map, with controlled noise in the initial position and orientation.
+    -   Particles are only generated in free spaces on the map (cells not occupied by obstacles). This ensures that the particles are valid and represent possible locations for the robot.
 
-### Obtención de datos del láser:
 
-    - Se calculan las distancias del láser en dos formas:
-        - Láser real: Datos obtenidos directamente de los sensores del robot.
-        - Láser teórico: Distancias simuladas mediante un algoritmo de ray tracing desde cada partícula.
-    - Las similitudes entre estos dos conjuntos de datos son la base para calcular la probabilidad de cada partícula.
+### Laser data:
 
-### Propagación de partículas:
+    -   Laser distances are calculated in two ways:
+        -   Real laser: Data obtained directly from the robot's sensors.
+        -   heoretical laser: Distances simulated using a ray tracing algorithm from each particle.
 
-    - En cada iteración, las partículas se mueven simulando el desplazamiento del robot. Este movimiento incluye:
-        - Ruido en x,yx,y y orientación para modelar las incertidumbres del movimiento.
-    -En este caso implemente la odometría real del robot para mejorar la precisión de la propagación.
+    -   The similarities between these two datasets form the basis for calculating the probability of each particle.
 
-### Cálculo de pesos:
+### Particles Propagation:
 
-    Se comparan las lecturas del láser real y teórico para cada partícula. Las partículas con mediciones más similares al láser real reciben un peso mayor.
-    Los pesos se normalizan para que su suma sea igual a 1, creando una distribución de probabilidad.
+    -   In each iteration, the particles move simulating the robot's displacement. This movement includes:
+        -   Noise in x,yx,y, and orientation to model the uncertainties of the movement.
 
-### Re-muestreo de partículas:
+    -   In this case, I implemented the robot's real odometry to improve the accuracy of the propagation.
 
-    Se utiliza la ruleta de Monte Carlo para seleccionar partículas en función de sus pesos. Esto significa que partículas con mayor peso tienen más probabilidad de ser seleccionadas, mientras que las de menor peso se eliminan gradualmente.
 
-### Iteración del bucle:
 
-    Estos pasos se repiten continuamente para refinar la estimación de la posición y orientación del robot en el mapa.
+### Weight Calculation:
 
-## Dificultades
+    The readings from the real and theoretical lasers are compared for each particle. Particles with measurements more similar to the real laser are assigned higher weights. The weights are normalized so that their sum equals 1, creating a probability distribution.
 
-Durante la implementación, surgieron varios desafíos:
+### Resampling Particles:
 
-### Validación de partículas iniciales
+    The Monte Carlo roulette method is used to select particles based on their weights. This means particles with higher weights are more likely to be selected, while those with lower weights are gradually eliminated.
 
-El principal reto al inicializar las partículas fue garantizar que todas cayeran en celdas libres del mapa. Esto requirió convertir coordenadas globales a locales y viceversa, y validar cada partícula para evitar ubicarlas sobre obstáculos.
+### Loop Iteration:
 
-### Simulación del láser
+    These steps are repeated continuously to refine the estimation of the robot's position and orientation on the map.
 
-La implementación del láser teórico mediante ray tracing fue compleja debido a mi inicial falta de entendimiento, afortunadamente a medida que fui avanzando en la practica me fui dando cuenta del verdadero funcionamiento y utilidad del laser teoroco.
+## Difficulties
 
-### Propagación y ruido
+During the implementation, several challenges arose:
 
-Modelar el ruido del movimiento del robot para que fuera realista pero no excesivo fue crítico para evitar que las partículas se dispersaran demasiado lejos del robot real.
+### Initial Particles Validation
 
-### Re-muestreo por ruleta
+The main challenge when initializing particles was ensuring they all fell in free cells on the map. This required converting global to local coordinates and vice versa, and validating each particle to avoid placing them on obstacles.
 
-La implementación del re-muestreo por ruleta con los pesos normalizados presentó dificultades iniciales, ya que errores menores en la normalización causaban desbalances en la selección de partículas.
+### Laser Simulation
 
-## Versión Final
+Implementing the theoretical laser using ray tracing was complex due to my initial lack of understanding. Fortunately, as I progressed through the practice, I began to grasp the true functionality and utility of the theoretical laser.
 
-En la versión final, el sistema funcionó correctamente gracias a las siguientes mejoras:
+### Propagation and Noise:
 
-### Inicialización robusta:
-    Las partículas se generan en torno al centro del mapa con ruido limitado, asegurando una representación inicial precisa.
+Modeling the robot's motion noise to make it realistic but not excessive was critical to prevent particles from spreading too far from the actual robot.
 
-### Simulación precisa del láser:
-    La comparación entre el láser real y el láser teórico fue optimizada utilizando el cálculo de errores absolutos y funciones probabilísticas gaussianas.
+### Roulet resampling:
 
-### Ruido ajustado:
-    La propagación de partículas incluye ruido gaussiano limitado en las posiciones x,yx,y y la orientación para simular el movimiento del robot.
+Implementing the Monte Carlo roulette resampling with normalized weights presented initial difficulties, as minor errors in normalization caused imbalances in particle selection.
 
-### Re-muestreo eficiente:
-    La ruleta de Monte Carlo ajusta la distribución de partículas en cada iteración, favoreciendo partículas con mayores probabilidades y descartando las menos relevantes.
+## Final Version:
 
-## Robot Limitaciones
+In the final version, the system worked correctly thanks to the following improvements:
 
-### Consumo computacional:
-    La simulación del láser virtual para cada partícula es costosa. Reducir el número de haces (parámetro LASER_NUM_BEAMS) mejora el rendimiento, pero afecta la precisión.
+### Inicialization:
 
-### Ruido excesivo:
-    En entornos con muchos obstáculos o ruido de sensores, la estimación puede volverse inestable si las partículas no convergen rápidamente.
+Particles are generated around the center of the map with limited noise, ensuring an accurate initial representation.
+
+### Precise Laser Simulation:
+
+The comparison between the real and theoretical lasers was optimized using absolute error calculations and Gaussian probabilistic functions.
+
+### Adjusted Noise:
+
+Particle propagation includes limited Gaussian noise in the x,yx,y positions and orientation to simulate the robot's movement.
+
+### Eficience Resampling:
+
+The Monte Carlo roulette adjusts the particle distribution in each iteration, favoring particles with higher probabilities and discarding less relevant ones.
+
+## Robot Limitations:
+
+### Computational cost:
+
+Simulating the virtual laser for each particle is computationally expensive. Reducing the number of beams (parameter LASER_NUM_BEAMS) improves performance but affects accuracy.
+
+### Excesive noise:
+
+In environments with many obstacles or sensor noise, the estimation can become unstable if the particles do not converge quickly.
 
 ## Conclusion:
 
-Esta práctica permitió implementar y comprender el algoritmo de Monte Carlo para la localización de robots. A través de pasos iterativos de propagación, cálculo de pesos y re-muestreo, el sistema es capaz de estimar con precisión la posición del robot en un mapa conocido.
+This practice allowed for the implementation and understanding of the Monte Carlo Localization algorithm for robots. Through iterative steps of propagation, weight calculation, and resampling, the system can accurately estimate the robot's position on a known map.
 
-Los aspectos más destacados de la práctica incluyen:
+The most notable aspects of the practice include:
 
-    - La inicialización controlada de partículas en espacios libres.
-    - La integración de datos del láser real y teórico.
-    - El uso eficiente de la ruleta de Monte Carlo para ajustar las partículas.
+    -   The controlled initialization of particles in free spaces.
+    -   The integration of real and theoretical laser data.
+    -   The efficient use of the Monte Carlo roulette for particle adjustment.
 
-A pesar de las limitaciones, el sistema es robusto y funcional, proporcionando una base sólida para futuras mejoras
+Despite its limitations, the system is robust and functional, providing a solid foundation for future improvements.
+
+## Full video
+
+[Ver el video en YouTube](https://youtu.be/4VLI0E0hw-s?feature=shared)
+
+
 

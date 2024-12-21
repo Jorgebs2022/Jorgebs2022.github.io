@@ -110,9 +110,13 @@ The most notable aspects of the practice include:
 
 Despite its limitations, the system is robust and functional, providing a solid foundation for future improvements.
 
-## Full video
+## Full video 1st try
 
 [Ver el video en YouTube](https://youtu.be/4VLI0E0hw-s?feature=shared)
+
+## Full video 2nd try with less propagation noise
+
+[Ver el video en YouTube](https://youtu.be/dbXMmLaQVIo?feature=shared)
 
 
 

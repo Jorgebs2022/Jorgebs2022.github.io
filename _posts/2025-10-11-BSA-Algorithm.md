@@ -7,48 +7,51 @@ categories: robotica-movil
 
 ## Introduction
 
-En esta practica el objetivo es conseguir que el robot trace un plan de movimiento por toda la casa y limpie lo maximo posible. Para ello es esencial trazar un plan, obtener los puntos criticos y puntos de retorno por los que el robot tiene que volver para seguir la planificacion.
+In this practice, the goal is to have the robot trace a movement plan throughout the house and clean as much as possible. To do this, it’s essential to generate a plan, extract the critical points, and the return points the robot must use to resume the plan.
 
-En esta practica tenemos un mapa PNG de la casa el cual tenemos que transformar en un mapa de rejilla ya que el robot se debe mover por esas celdillas
+We start from a PNG map of the house, which we need to convert into a grid map because the robot must move cell by cell.
 
 ## Plan Algorithm Overview
 
 The navigation and planning system relied on several key components:
 
 1. **transformation matrix**:
-    - En el mapa trabajamos con píxeles (imagen 2D), pero el robot se mueve en coordenadas de mundo (metros). Para poder pasar de un sistema al otro, necesitamos un “puente”. Ese puente lo construimos a partir de puntos de calibración(pares de puntos conocidos tanto en mundo como en la imagen).
+    - The map works in pixels (2D image), but the robot moves in world coordinates (meters). To convert between both systems, we need a “bridge.” We build that bridge from calibration point pairs (points known both in world coordinates and in the image).
 
-    - Con 3 puntos no colineales ya podriamos ajustar una transformación afín exacta, pero al usar más puntos haces un ajuste por mínimos cuadrados que promedia el error, por ello he optado por optener 10 coordenadas con sus respectivos pixeles para calibrar la relación entre el plano del mapa (píxeles) y el plano del mundo (metros)
+    - With 3 non-collinear points we could fit an exact affine transform, but using more points lets us do a least-squares fit that averages out error. That’s why I collected 10 world↔pixel correspondences to calibrate the relationship between the map plane (pixels) and the world plane (meters).
 
-    - La transformación que usas es afín 2D. Modela traslación, rotación, escala y cizalla entre mundo y píxeles:
+    - The transform is a 2D affine mapping. It models translation, rotation, scale, and shear between world and pixels:
             u​=ax+by+tx
             v​=cx+dy+ty​
 
-    donde (x,y) están en mundo (m) y (u,v) en píxeles. Los 6 parámetros  (a,b,c,d,tx,ty) son los que ajustas con los puntos de calibración.
+    where (x, y) are in world (m) and (u, v) in pixels. The 6 parameters (a, b, c, d, tx, ty) are fitted using the calibration points.
 
-    - Para cada punto añado dos ecuaciones (una para u y otra para v). Con N puntos tengo 2N ecuaciones y 6 incógnitas. Resuelvo por mínimos cuadrados (lstsq), que encuentra el valor que minimiza el error global entre los u,v predichos y los observados.
+    - For each point I add two equations (one for u and one for v). With N points I have 2N equations and 6 unknowns. I solve by least squares (lstsq), which finds the values that minimize the global error between predicted and observed u, v.
 
-    - Esta matriz es de suma importancia para para la creacion de las funciones world_to_pixel(x,y,T) y pixel_to_world(u,v,T)
+    - This matrix is crucial to implement world_to_pixel(x, y, T) and pixel_to_world(u, v, T).
 
 2. **Obstacle inflation**:
-    - Con el objetivo de que el robot no se choque contra los obstaculos a la hora de navegar es necesario que se realice una inflacion de los obstaculos con la finalidad de asegurar que el robor trace la ruta sin colisiones.
+    - To reduce collision risk during navigation, obstacles are inflated so the planned path keeps a safe distance from walls and obstacles.
 
 3. **Creating the Grid Map**:
-    - El mapa de rejilla es uno de los elementos mas imprtantes de la practica y lo he hecho de la siguiente manera, Creo una matriz numpy que solo va a contener en cada coordenada los valores 0(Negro) o 127(Blnanco), las celdillas tienen un tamaño de 28x28, Al principio opte por hacer un contador de pixeles blancos y pixdeles negros, recorriendo cada pixel de la celdilla, tras recorrerla si habia mas pixeles negros que blancos la celdilla seria negra y biceversa. Finalmente para aumentar la seguridad del robot y evitar las colisiones opte por simplemente si el en los pixeles de la celdilla que queria rellenar se encontraba por lo menos un pixel negro la celdilla entera seria negra
+    - The grid map is one of the most important elements. I create a NumPy matrix that stores only 0 (black) or 127 (white) per cell. Cells are 28×28 pixels. Initially I counted white and black pixels inside each cell: after scanning the cell, if there were more black than white pixels, the cell became black, and vice versa. Finally, to increase safety and avoid collisions, I changed the rule to: if there is at least one black pixel in the cell, the entire cell is black.
 
 4. **Movement Priority**:
-   - A la hora de hacer la planificacion el robot debe llevar una prioridad de movimientos para que este sea lo mas eficiente posible, en este caso he optado por realizar los movimientis derecha, arriba, izquierda, abajo en este orden.
+   - For planning, the robot follows a movement priority to be as efficient as possible. I chose the order: right, up, left, down.
 
 5. **Critical Point and Return Point**:
-   - Al trazar el plan llega un momento donde el robot no puede girar en ninguna direccion ya que o se encuentra rodeado de paredes o se encuentra rodeado de zonas que ya ha visitado(el plan no puede repetirse por lo que nos guardamos las coordenadas por donde pasa la planificacion paraque no pase dos veces por el mismo sitio), al llegar a este punto critico el robot se queda sin opciones de movimiento, pero para solucionar este problema se encuentra el punto de retorno. En mi caso elpunto de retorno lo he obtenido de la siguiente manera. Cada vez que el plan avanza ua rejilla me guardo sus vecinos en un stack, al llegar a un punto critic recorro la lista de vecinos hasta encontrar el ultimo vecino guardado que se encuentre en una celdilla no visitada; en este momento lanzo una busueda por anchura para encontrar la ruta mas corta que existe entre el punto critico y el punto de retorno. Esta es la unica excepcion que hace posible que el plan pueda volver a pasar por celdillas ya visiyadas; Una vez ha llegado al punto de retorno el plan continua co normalidad con la prioridad de movimientos hasta llegar de nuevo a un punto critico.
+   - While tracing the plan, there are times when the robot cannot move in any direction because it is either surrounded by walls or by already visited cells (the plan cannot repeat cells, so we mark visited ones). When we reach this critical point, the robot runs out of moves.
+
+    - To solve it, we use a return point. In my case: each time the plan advances one cell, I push its neighbors onto a stack. At a critical point, I scan that stack (LIFO) to find the most recently saved neighbor that lies on an unvisited cell; at that moment I launch a breadth-first search (BFS) to compute the shortest path between the critical point and the return point. This is the only exception that allows the plan to traverse already visited cells; once it reaches the return point, the plan continues normally with the movement priority until it reaches another critical point.
 
 
 
 6. **End Planning**:
-   - Ademas de el mapa de rejilla que se ha creado para que la planificacion se mueva por celdillas tambie he creado una matriz numpy de booleanos que indican si la celdilla ha sido visitada o no, al principio la matriz entera esta a False y a medida que la planificacion pasa por una de las celdillas del mapa de rejilla esta pone a True la posicion de la matriz de visitados que corresponde con la posicion de la celdilla. Cuando toda la matriz esta en True la planificacion termina.
+   - Besides the grid map, I keep a boolean NumPy matrix indicating whether each cell has been visited. Initially, the whole matrix is False, and as the plan visits cells, the corresponding positions are set to True. When the entire matrix is True, the planning phase ends.
 
 7. **Robot movement**
-    - Para el mpvimiento del robot primero obtenemos la orientacion del punto al que queremos llegar con respecto a robot y calculamos el error en un rango de -pi a pi, para el control es simple, se basa en avanzar y girar, cuando el error del angulo calculado supera un humbral el robot se detiene (unicamente se detiene la velocidad lineal) y gira hasta que se reduce el error, entontes procede a avanzar hacia el objetivo. El plan devuelve una lista de coordenadas que es la ruta que tiene que seguir el robot para completar toda la casa.
+    - For the robot’s motion, we first obtain the bearing from the robot to the next waypoint and compute the angle error wrapped to the range [−π,π].
+    The controller is simple: advance and turn. When the angular error exceeds a threshold, the robot stops linear motion and rotates until the error decreases; then it proceeds to move forward toward the target. The planner returns a list of grid coordinates which becomes the route the robot follows to cover the whole house.
 
 
 
@@ -57,23 +60,22 @@ The navigation and planning system relied on several key components:
 Several challenges arose during the development and implementation of this practice:
 
 ### Creating the transformation matrix
-Devido a los conceptos teoricos requeridos para hacer la matriz de transormacion tanto en el hambito de las matematicas como en el de la libreria de numpy se me ha hecho muy dificil sacar correctamente la matriz de transformacion
+Due to the theoretical concepts required—both mathematical and NumPy-related—it was difficult to correctly derive and implement the transformation matrix.
 ### Reaching the return point
-Se me complico mucho hacer la vuelta dle plan al punto de retorno seleccionado ya que inicialmente en mi plan tras llegar al punto critico se teletransportaba al punto de retorno y posteriormente seguia con l plan, pero esre metodo era ineficiente por lo que tuve que crear la funcion de busqueda por anchura para trazar un camino de vuelta del punto critico al punto de retorno.
+Getting the plan back to the selected return point was tricky. Initially, after reaching the critical point, the plan “teleported” to the return point and then continued. That was inefficient, so I implemented BFS to trace a shortest path from the critical point back to the return point.
 
 ### Robot mocement algorithm
-Inicialmente tuve la intencion de hacer el movimiento del robot meiante un VFF, tras darme cuenta de que la practica no incluia obstaculos dinamicos me di cuenta de que lo ms optimo era hacer que simplemente el robot se dirijiese a la coordenada indicada ya que si el grid map, la inflacion de los obstaculos estaban correctamente definidos entonces el robot segiria su ruta sin chocarse 
+At first I intended to move the robot with a VFF (Vector Field Force) approach. After realizing there were no dynamic obstacles in the practice, the most optimal solution was simply to drive the robot directly to each waypoint, assuming the grid map and obstacle inflation were correct—thus the robot would follow its route without collisions.
 
 ## Robot limitations
-Una de las limitaciones mas grandes del robot es su velocidad, esto es debido a que si se aumenta considerablemente su velocidad esta afecta al movimiento dle robot
+One major limitation is speed. If it is increased too much, it negatively affects the robot’s motion behavior.
 ## Conclusion
 
-This practice provided valuable experience in implementing a navigation system based on planning. Understanding BFS ,grid matrix, onstacle inflation and planning , managing coordinate systems, and balancing navigation performance were key lessons learned. While there are areas for improvement, the vehicle successfully navigates to its target creaning almos all the house.
+This practice provided valuable experience in implementing a planning-based navigation system. Understanding BFS, grid construction, obstacle inflation, planning, managing coordinate systems, and balancing navigation performance were key lessons. While there is room for improvement, the robot successfully navigates to its target, cleaning almost the entire house.
+## Full video
 
-## Full video one trip
+[Ver el video en YouTube](https://youtu.be/ndgWXGq5848)
 
-[Ver el video en YouTube](https://youtu.be/ZvjFWqf-dd8)
+## photo of the map
 
-## Full video two trips
-
-[Ver el video en YouTube](https://youtu.be/APqx-dhWYkQ)
+![Texto alternativo](/assets/images/ BSA_alg.png)

@@ -64,7 +64,7 @@ Due to the theoretical concepts required—both mathematical and NumPy-related�
 ### Reaching the return point
 Getting the plan back to the selected return point was tricky. Initially, after reaching the critical point, the plan “teleported” to the return point and then continued. That was inefficient, so I implemented BFS to trace a shortest path from the critical point back to the return point.
 
-### Robot mocement algorithm
+### Robot movement algorithm
 At first I intended to move the robot with a VFF (Vector Field Force) approach. After realizing there were no dynamic obstacles in the practice, the most optimal solution was simply to drive the robot directly to each waypoint, assuming the grid map and obstacle inflation were correct—thus the robot would follow its route without collisions.
 
 ## Robot limitations

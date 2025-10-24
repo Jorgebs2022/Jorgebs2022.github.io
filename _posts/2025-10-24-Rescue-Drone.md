@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Rescue Drone"
-date: 2025-10-24 14:50:00 +0200
+date: 2025-10-24 11:50:00 +0200
 categories: robotica-movil
 ---
 

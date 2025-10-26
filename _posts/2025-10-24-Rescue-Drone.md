@@ -41,5 +41,5 @@ The navigation and planning system relied on several key components:
 
 ## Full video
 
-[Ver el video en YouTube](https://youtu.be/WRnUdnYlmBA)
+[Ver el video en YouTube](https://youtu.be/IVMl2tvM3as)
 

@@ -116,7 +116,7 @@ The final implementation successfully:
 
 ## Parking with no front car
 
-[Ver el video en YouTube](https://youtu.be/FOpQqKtzcGc)
+[Ver el video en YouTube](https://youtu.be/sSkAsMvglyo)
 
 ## Parking with no back car
 

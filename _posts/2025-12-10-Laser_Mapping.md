@@ -63,9 +63,9 @@ This allows incremental updates using simple additions and avoids numerical inst
 
 Each new observation updates the map according to:
 
-\[
-l_t = l_{t-1} + (l_{sensor} - l_0)
-\]
+
+- l_t = l_{t-1} + (l_{sensor} - l_0)
+
 
 To prevent excessive certainty (inertia), the log-odds values are **saturated** within a fixed interval:
 

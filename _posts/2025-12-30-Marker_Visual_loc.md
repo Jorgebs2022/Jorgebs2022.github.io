@@ -195,6 +195,8 @@ To avoid corrupting the global pose, we reject updates that produce large jumps 
 
 If no tags are detected, we propagate from the last accepted world anchor using odometry deltas. This keeps the estimate continuous even when tags disappear.
 
+---
+
 ## Difficulties Encountered
 
 1. **Unstable visual fixes at long distance**
@@ -203,6 +205,8 @@ This was solved by selecting the closest tag and rejecting large jumps.
 
 2. **Frame convention mismatches (OpenCV vs AprilTag vs robot)**
 Correct axis alignment required applying fixed rotations to the inverted PnP transform.
+
+---
 
 ## Results
 
@@ -217,6 +221,8 @@ The final implementation achieves:
 - Continuous pose tracking using odometry when tags are not visible
 
 - Improved stability thanks to outlier rejection, preventing large position jumps
+
+---
 
 ## Conclusion
 
@@ -233,6 +239,8 @@ This practice demonstrates a complete pipeline for marker-based visual localizat
 - Outlier rejection improves robustness in real scenarios
 
 This approach provides a strong foundation for more advanced localization techniques such as visual-inertial odometry and SLAM, where similar fusion concepts are applied but using probabilistic filters.
+
+---
 
 ## Marker-Based Visual Localization
 
